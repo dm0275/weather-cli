@@ -10,6 +10,7 @@ plugins {
 }
 
  tasks.register("goBuildDarwin") {
+     group = "build"
      doLast {
          val outputDir: File = layout.buildDirectory.asFile.get()
          // Create build dir
