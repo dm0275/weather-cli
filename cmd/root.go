@@ -1,22 +1,29 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 )
 
-func rootCmd() *cobra.Command {
-	return &cobra.Command{
+type WeatherCLI struct {
+	rootCmd *cobra.Command
+}
+
+func NewCLI() *WeatherCLI {
+	weatherCli := &WeatherCLI{}
+	weatherCli.initialize()
+
+	return weatherCli
+}
+
+func (c WeatherCLI) initialize() {
+	// Initialize the root cmd
+	c.rootCmd = &cobra.Command{
 		Use:   "weather-cli",
 		Short: "weather-cli - a CLI to get weather data",
 		Long:  `weather-cli is CLI used to get weather data`,
-		Run: func(cmd *cobra.Command, args []string) {
-			// TODO: Add cmd action and subcommands
-			fmt.Println("TODO: Add subcommands")
-		},
 	}
 }
 
-func Execute() error {
-	return rootCmd().Execute()
+func (c WeatherCLI) Execute() {
+	cobra.CheckErr(c.rootCmd.Execute())
 }
