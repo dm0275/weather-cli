@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/dm0275/weather-cli/cmd/version"
 	"github.com/spf13/cobra"
 )
 
@@ -12,18 +13,24 @@ func NewCLI() *WeatherCLI {
 	weatherCli := &WeatherCLI{}
 	weatherCli.initialize()
 
+	// Setup sub-commands
+	weatherCli.rootCmd.AddCommand(version.NewVersionCmd())
+
+	// Disable auto-completion
+	weatherCli.rootCmd.CompletionOptions.DisableDefaultCmd = true
+
 	return weatherCli
 }
 
-func (c WeatherCLI) initialize() {
+func (w *WeatherCLI) initialize() {
 	// Initialize the root cmd
-	c.rootCmd = &cobra.Command{
+	w.rootCmd = &cobra.Command{
 		Use:   "weather-cli",
 		Short: "weather-cli - a CLI to get weather data",
 		Long:  `weather-cli is CLI used to get weather data`,
 	}
 }
 
-func (c WeatherCLI) Execute() {
-	cobra.CheckErr(c.rootCmd.Execute())
+func (w *WeatherCLI) Execute() {
+	cobra.CheckErr(w.rootCmd.Execute())
 }

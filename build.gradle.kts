@@ -9,18 +9,42 @@ plugins {
     id("base")
 }
 
- tasks.register("goBuildDarwin") {
-     group = "build"
-     doLast {
-         val outputDir: File = layout.buildDirectory.asFile.get()
-         // Create build dir
-         mkdir(outputDir)
+version = "0.0.1"
+val moduleName = "github.com/dm0275/weather-cli"
 
-         exec {
-             executable = "go"
-             args = listOf("build", "-o", outputDir.path, projectDir.path)
-         }
-     }
- }
+tasks.register("goBuildDarwin") {
+    group = "build"
+    doLast {
+        var flags = ""
+        val goBinary = "go"
+        val ldFlags = mapOf("$moduleName/pkg/version.version" to version,
+                "$moduleName/pkg/version.os" to "darwin",
+                "$moduleName/pkg/version.arch" to "arm64")
+        val outputDir: File = layout.buildDirectory.asFile.get()
+
+        // Create build dir
+        mkdir(outputDir)
+
+        // Setup args
+        var goTaskArgs = "build -a "
+
+        // Configure output dir
+        goTaskArgs += "-o ${outputDir.path} "
+
+        // Setup ld flags
+        ldFlags.forEach { (key, value) ->
+            flags += "-X $key=$value "
+        }
+        goTaskArgs += "-ldflags='$flags' "
+
+        // Configure project path
+        goTaskArgs += projectDir.path
+
+        exec {
+            executable = "sh"
+            args = mutableListOf("-c", "$goBinary $goTaskArgs")
+        }
+    }
+}
 
 tasks.getByPath("build").dependsOn("goBuildDarwin")
