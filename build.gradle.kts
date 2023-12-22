@@ -6,45 +6,16 @@
  */
 
 plugins {
-    id("base")
+    id("com.fussionlabs.gradle.go-plugin") version("0.5.2")
 }
 
 version = "0.0.1"
 val moduleName = "github.com/dm0275/weather-cli"
 
-tasks.register("goBuildDarwin") {
-    group = "build"
-    doLast {
-        var flags = ""
-        val goBinary = "go"
-        val ldFlags = mapOf("$moduleName/pkg/version.version" to version,
-                "$moduleName/pkg/version.os" to "darwin",
-                "$moduleName/pkg/version.arch" to "arm64")
-        val outputDir: File = layout.buildDirectory.asFile.get()
-
-        // Create build dir
-        mkdir(outputDir)
-
-        // Setup args
-        var goTaskArgs = "build -a "
-
-        // Configure output dir
-        goTaskArgs += "-o ${outputDir.path} "
-
-        // Setup ld flags
-        ldFlags.forEach { (key, value) ->
-            flags += "-X $key=$value "
-        }
-        goTaskArgs += "-ldflags='$flags' "
-
-        // Configure project path
-        goTaskArgs += projectDir.path
-
-        exec {
-            executable = "sh"
-            args = mutableListOf("-c", "$goBinary $goTaskArgs")
-        }
-    }
+go {
+    os = listOf("darwin")
+    arch = listOf("arm64")
+    ldFlags = mapOf("github.com/dm0275/weather-cli/pkg/version.version" to "$version",
+        "github.com/dm0275/weather-cli/pkg/version.os" to "darwin",
+        "github.com/dm0275/weather-cli/pkg/version.arch" to "arm64")
 }
-
-tasks.getByPath("build").dependsOn("goBuildDarwin")
