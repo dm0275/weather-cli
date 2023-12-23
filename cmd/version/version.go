@@ -7,11 +7,13 @@ import (
 )
 
 func NewVersionCmd() *cobra.Command {
-	return &cobra.Command{
+	versionCmd := &cobra.Command{
 		Use:   "version",
 		Short: "Print WeatherCLI version",
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println(version.Version())
 		},
 	}
+
+	return versionCmd
 }

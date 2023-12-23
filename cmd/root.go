@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/dm0275/weather-cli/cmd/city"
 	"github.com/dm0275/weather-cli/cmd/version"
 	"github.com/spf13/cobra"
 )
@@ -15,6 +16,7 @@ func NewCLI() *WeatherCLI {
 
 	// Setup sub-commands
 	weatherCli.rootCmd.AddCommand(version.NewVersionCmd())
+	weatherCli.rootCmd.AddCommand(city.NewCityCmd())
 
 	// Disable auto-completion
 	weatherCli.rootCmd.CompletionOptions.DisableDefaultCmd = true
